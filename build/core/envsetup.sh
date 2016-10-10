@@ -1,11 +1,11 @@
-# citrus functions that extend build/envsetup.sh
+# caf functions that extend build/envsetup.sh
 
-function citrus_device_combos()
+function caf_device_combos()
 {
     local T list_file variant device
 
     T="$(gettop)"
-    list_file="${T}/vendor/citrus/citrus.devices"
+    list_file="${T}/vendor/caf/caf.devices"
     variant="userdebug"
 
     if [[ $1 ]]
@@ -27,51 +27,51 @@ function citrus_device_combos()
     if [[ ! -f "${list_file}" ]]
     then
         echo "unable to find device list: ${list_file}"
-        list_file="${T}/vendor/citrus/citrus.devices"
+        list_file="${T}/vendor/caf/caf.devices"
         echo "defaulting device list file to: ${list_file}"
     fi
 
     while IFS= read -r device
     do
-        add_lunch_combo "citrus_${device}-${variant}"
+        add_lunch_combo "caf_${device}-${variant}"
     done < "${list_file}"
 }
 
-function citrus_rename_function()
+function caf_rename_function()
 {
-    eval "original_citrus_$(declare -f ${1})"
+    eval "original_caf_$(declare -f ${1})"
 }
 
-function citrus_add_hmm_entry()
+function caf_add_hmm_entry()
 {
     f_name="${1}"
     f_desc="${2}"
 }
 
-function _citrus_build_hmm() #hidden
+function _caf_build_hmm() #hidden
 {
     printf "%-8s %s" "${1}:" "${2}"
 }
 
-function citrus_append_hmm()
+function caf_append_hmm()
 {
-    HMM_DESCRIPTIVE=("${HMM_DESCRIPTIVE[@]}" "$(_citrus_build_hmm "$1" "$2")")
+    HMM_DESCRIPTIVE=("${HMM_DESCRIPTIVE[@]}" "$(_caf_build_hmm "$1" "$2")")
 }
 
-function citrus_add_hmm_entry()
+function caf_add_hmm_entry()
 {
     for c in ${!HMM_DESCRIPTIVE[*]}
     do
         if [[ "${1}" == $(echo "${HMM_DESCRIPTIVE[$c]}" | cut -f1 -d":") ]]
         then
-            HMM_DESCRIPTIVE[${c}]="$(_citrus_build_hmm "$1" "$2")"
+            HMM_DESCRIPTIVE[${c}]="$(_caf_build_hmm "$1" "$2")"
             return
         fi
     done
-    citrus_append_hmm "$1" "$2"
+    caf_append_hmm "$1" "$2"
 }
 
-function citrusemote()
+function csremote()
 {
     local proj pfx project
 
@@ -80,7 +80,7 @@ function citrusemote()
         echo "Not in a git directory. Please run this from an Android repository you wish to set up."
         return
     fi
-    git remote rm citrus 2> /dev/null
+    git remote rm caf 2> /dev/null
 
     proj="$(pwd -P | sed "s#$ANDROID_BUILD_TOP/##g")"
 
@@ -90,8 +90,8 @@ function citrusemote()
 
     project="${proj//\//_}"
 
-    git remote add citrus "git@github.com:Citrus-CAF/$pfx$project"
-    echo "Remote 'citrus' created"
+    git remote add caf "git@github.com:CAF/$pfx$project"
+    echo "Remote 'caf' created"
 }
 
 function cmremote()
@@ -151,11 +151,11 @@ function cafremote()
     echo "Remote 'caf' created"
 }
 
-function citrus_push()
+function caf_push()
 {
     local branch ssh_name path_opt proj
-    branch="crd6.0"
-    ssh_name="citrus_review"
+    branch="n"
+    ssh_name="caf_review"
     path_opt=
 
     if [[ "$1" ]]
@@ -173,25 +173,25 @@ function citrus_push()
         proj="android_$proj"
     fi
 
-    git $path_opt push "ssh://${ssh_name}/Citrus-CAF/$proj" "HEAD:refs/for/$branch"
+    git $path_opt push "ssh://${ssh_name}/CAF/$proj" "HEAD:refs/for/$branch"
 }
 
 
-citrus_rename_function hmm
+caf_rename_function hmm
 function hmm() #hidden
 {
     local i T
     T="$(gettop)"
-    original_citrus_hmm
+    original_caf_hmm
     echo
 
-    echo "vendor/citrus extended functions. The complete list is:"
-    for i in $(grep -P '^function .*$' "$T/vendor/citrus/build/envsetup.sh" | grep -v "#hidden" | sed 's/function \([a-z_]*\).*/\1/' | sort | uniq); do
+    echo "vendor/caf extended functions. The complete list is:"
+    for i in $(grep -P '^function .*$' "$T/vendor/caf/build/envsetup.sh" | grep -v "#hidden" | sed 's/function \([a-z_]*\).*/\1/' | sort | uniq); do
         echo "$i"
     done |column
 }
 
-citrus_append_hmm "citrusremote" "Add a git remote for matching Citrus-CAF repository"
-citrus_append_hmm "cmremote" "Add a git remote for matching CM repository"
-citrus_append_hmm "aospremote" "Add git remote for matching AOSP repository"
-citrus_append_hmm "cafremote" "Add git remote for matching CodeAurora repository."
+caf_append_hmm "cafremote" "Add a git remote for matching CAF repository"
+caf_append_hmm "cmremote" "Add a git remote for matching CM repository"
+caf_append_hmm "aospremote" "Add git remote for matching AOSP repository"
+caf_append_hmm "cafremote" "Add git remote for matching CodeAurora repository."

@@ -17,66 +17,34 @@ PRODUCT_PROPERTY_OVERRIDES += \
 PRODUCT_PROPERTY_OVERRIDES += persist.sys.dun.override=0
 
 PRODUCT_COPY_FILES += \
-    vendor/citrus/prebuilt/bin/sysinit:system/bin/sysinit \
-    vendor/citrus/prebuilt/etc/init.citrus.rc:root/init.citrus.rc
+    vendor/caf/prebuilt/bin/sysinit:system/bin/sysinit \
+    vendor/caf/prebuilt/etc/init.caf.rc:root/init.caf.rc
 
 # Backup Tool
 PRODUCT_COPY_FILES += \
-    vendor/citrus/prebuilt/common/bin/backuptool.sh:install/bin/backuptool.sh \
-    vendor/citrus/prebuilt/common/bin/backuptool.functions:install/bin/backuptool.functions \
-    vendor/citrus/prebuilt/common/bin/blacklist:system/addon.d/blacklist \
-    vendor/citrus/prebuilt/common/bin/whitelist:system/addon.d/whitelist \
-
-# Boot animation include
-ifneq ($(TARGET_SCREEN_WIDTH) $(TARGET_SCREEN_HEIGHT),$(space))
-
-# determine the smaller dimension
-TARGET_BOOTANIMATION_SIZE := $(shell \
-  if [ $(TARGET_SCREEN_WIDTH) -lt $(TARGET_SCREEN_HEIGHT) ]; then \
-    echo $(TARGET_SCREEN_WIDTH); \
-  else \
-    echo $(TARGET_SCREEN_HEIGHT); \
-  fi )
-
-# get a sorted list of the sizes
-bootanimation_sizes := $(subst .zip,, $(shell ls vendor/citrus/prebuilt/common/bootanimation))
-bootanimation_sizes := $(shell echo -e $(subst $(space),'\n',$(bootanimation_sizes)) | sort -rn)
-
-# find the appropriate size and set
-define check_and_set_bootanimation
-$(eval TARGET_BOOTANIMATION_NAME := $(shell \
-  if [ -z "$(TARGET_BOOTANIMATION_NAME)" ]; then
-    if [ $(1) -le $(TARGET_BOOTANIMATION_SIZE) ]; then \
-      echo $(1); \
-      exit 0; \
-    fi;
-  fi;
-  echo $(TARGET_BOOTANIMATION_NAME); ))
-endef
-$(foreach size,$(bootanimation_sizes), $(call check_and_set_bootanimation,$(size)))
-
-PRODUCT_COPY_FILES += \
-    vendor/citrus/prebuilt/common/bootanimation/$(TARGET_BOOTANIMATION_NAME).zip:system/media/bootanimation.zip
-endif
-
+    vendor/caf/prebuilt/common/bin/backuptool.sh:install/bin/backuptool.sh \
+    vendor/caf/prebuilt/common/bin/backuptool.functions:install/bin/backuptool.functions \
+    vendor/caf/prebuilt/common/bin/blacklist:system/addon.d/blacklist \
+    vendor/caf/prebuilt/common/bin/whitelist:system/addon.d/whitelist \
+    
 # init.d support
 PRODUCT_COPY_FILES += \
-    vendor/citrus/prebuilt/common/bin/sysinit:system/bin/sysinit \
-    vendor/citrus/prebuilt/common/etc/init.d/00banner:system/etc/init.d/00banner \
-    vendor/citrus/prebuilt/common/etc/init.d/90userinit:system/etc/init.d/90userinit
+    vendor/caf/prebuilt/common/bin/sysinit:system/bin/sysinit \
+    vendor/caf/prebuilt/common/etc/init.d/00banner:system/etc/init.d/00banner \
+    vendor/caf/prebuilt/common/etc/init.d/90userinit:system/etc/init.d/90userinit
 
 # SuperSu
 PRODUCT_COPY_FILES += \
- vendor/citrus/prebuilt/common/etc/UPDATE-SuperSU.zip:system/addon.d/UPDATE-SuperSU.zip
+ vendor/caf/prebuilt/common/etc/UPDATE-SuperSU.zip:system/addon.d/UPDATE-SuperSU.zip
 
 # Init file
 PRODUCT_COPY_FILES += \
-    vendor/citrus/prebuilt/common/etc/init.local.rc:root/init.local.rc
+    vendor/caf/prebuilt/common/etc/init.local.rc:root/init.local.rc
 
 # Bring in camera effects
 PRODUCT_COPY_FILES +=  \
-    vendor/citrus/prebuilt/common/media/LMprec_508.emd:system/media/LMprec_508.emd \
-    vendor/citrus/prebuilt/common/media/PFFprec_600.emd:system/media/PFFprec_600.emd
+    vendor/caf/prebuilt/common/media/LMprec_508.emd:system/media/LMprec_508.emd \
+    vendor/caf/prebuilt/common/media/PFFprec_600.emd:system/media/PFFprec_600.emd
 
 # Enable SIP+VoIP on all targets
 PRODUCT_COPY_FILES += \
@@ -110,7 +78,8 @@ PRODUCT_PACKAGES += \
     oprofiled \
     sqlite3 \
     strace \
-    Terminal
+    Terminal \
+    nano
 
 # Stagefright FFMPEG plugin
 PRODUCT_PACKAGES += \
@@ -146,24 +115,24 @@ PRODUCT_PACKAGES += \
 
 # World APN list
 PRODUCT_COPY_FILES += \
-    vendor/citrus/prebuilt/common/etc/apns-conf.xml:system/etc/apns-conf.xml
+    vendor/caf/prebuilt/common/etc/apns-conf.xml:system/etc/apns-conf.xml
 
 # Selective SPN list for operator number who has the problem.
 PRODUCT_COPY_FILES += \
-    vendor/citrus/prebuilt/common/etc/selective-spn-conf.xml:system/etc/selective-spn-conf.xml
+    vendor/caf/prebuilt/common/etc/selective-spn-conf.xml:system/etc/selective-spn-conf.xml
 
 # Overlays & Include LatinIME dictionaries
 PRODUCT_PACKAGE_OVERLAYS += \
-	vendor/citrus/overlay/common \
-	vendor/citrus/overlay/dictionaries
+	vendor/caf/overlay/common \
+	vendor/caf/overlay/dictionaries
 
 # Proprietary latinime libs needed for Keyboard swyping
 ifneq ($(filter arm64,$(TARGET_ARCH)),)
 PRODUCT_COPY_FILES += \
-    vendor/citrus/prebuilt/common/lib/libjni_latinime.so:system/lib/libjni_latinime.so
+    vendor/caf/prebuilt/common/lib/libjni_latinime.so:system/lib/libjni_latinime.so
 else
 PRODUCT_COPY_FILES += \
-    vendor/citrus/prebuilt/common/lib64/libjni_latinime.so:system/lib64/libjni_latinime.so
+    vendor/caf/prebuilt/common/lib64/libjni_latinime.so:system/lib64/libjni_latinime.so
 endif
 
 # by default, do not update the recovery with system updates
@@ -177,50 +146,50 @@ endif
 $(call inherit-product-if-exists, vendor/extra/product.mk)
 
 # Versioning System
-# Citrus-CAF first version.
-PRODUCT_VERSION_MAJOR = MM
-PRODUCT_VERSION_MINOR = 2.0
-ifdef CITRUS_BUILD_EXTRA
-    CITRUS_POSTFIX := -$(CITRUS_BUILD_EXTRA)
+# CAF first version.
+PRODUCT_VERSION_MAJOR = N
+PRODUCT_VERSION_MINOR = 1.0
+ifdef CAF_BUILD_EXTRA
+    CAF_POSTFIX := -$(CAF_BUILD_EXTRA)
 endif
-ifndef CITRUS_BUILD_TYPE
-ifeq ($(CITRUS_RELEASE),true)
-    CITRUS_BUILD_TYPE := OFFICIAL
+ifndef CAF_BUILD_TYPE
+ifeq ($(CAF_RELEASE),true)
+    CAF_BUILD_TYPE := OFFICIAL
     PLATFORM_VERSION_CODENAME := OFFICIAL
-    CITRUS_POSTFIX := -$(shell date +"%Y%m%d")
+    CAF_POSTFIX := -$(shell date +"%Y%m%d")
 else
-    CITRUS_BUILD_TYPE := UNOFFICIAL
+    CAF_BUILD_TYPE := UNOFFICIAL
     PLATFORM_VERSION_CODENAME := UNOFFICIAL
-    CITRUS_POSTFIX := -$(shell date +"%Y%m%d")
+    CAF_POSTFIX := -$(shell date +"%Y%m%d")
 endif
 endif
 
-ifeq ($(CITRUS_BUILD_TYPE),DM)
-    CITRUS_POSTFIX := -$(shell date +"%Y%m%d")
+ifeq ($(CAF_BUILD_TYPE),DM)
+    CAF_POSTFIX := -$(shell date +"%Y%m%d")
 endif
 
-ifndef CITRUS_POSTFIX
-    CITRUS_POSTFIX := -$(shell date +"%Y%m%d")
+ifndef CAF_POSTFIX
+    CAF_POSTFIX := -$(shell date +"%Y%m%d")
 endif
 
-PLATFORM_VERSION_CODENAME := $(CITRUS_BUILD_TYPE)
+PLATFORM_VERSION_CODENAME := $(CAF_BUILD_TYPE)
 
 # Flavour
-PRODUCT_VERSION_FLAVOUR := LemonDrop
+PRODUCT_VERSION_FLAVOUR := BareBase
 PRODUCT_PROPERTY_OVERRIDES += \
-    ro.citrus.flavour=$(PRODUCT_VERSION_FLAVOUR)
+    ro.caf.flavour=$(PRODUCT_VERSION_FLAVOUR)
 
 # Set all versions
-CITRUS_VERSION := CitrusCAF-$(PRODUCT_VERSION_MINOR)-$(PRODUCT_VERSION_FLAVOUR)-$(PRODUCT_VERSION_MAJOR)-$(CITRUS_BUILD_TYPE)$(CITRUS_POSTFIX)
-CITRUS_MOD_VERSION := CitrusCAF-$(CITRUS_BUILD)-$(PRODUCT_VERSION_MAJOR)-$(PRODUCT_VERSION_MINOR)-$(PRODUCT_VERSION_FLAVOUR)-$(CITRUS_BUILD_TYPE)$(CITRUS_POSTFIX)
+CAF_VERSION := CAF-$(PRODUCT_VERSION_MINOR)-$(PRODUCT_VERSION_FLAVOUR)-$(PRODUCT_VERSION_MAJOR)-$(CAF_BUILD_TYPE)$(CAF_POSTFIX)
+CAF_MOD_VERSION := CAF-$(CAF_BUILD)-$(PRODUCT_VERSION_MAJOR)-$(PRODUCT_VERSION_MINOR)-$(PRODUCT_VERSION_FLAVOUR)-$(CAF_BUILD_TYPE)$(CAF_POSTFIX)
 PRODUCT_PROPERTY_OVERRIDES += \
     BUILD_DISPLAY_ID=$(BUILD_ID) \
-    citrus.ota.version=$(CITRUS_MOD_VERSION) \
-    ro.citrus.version=$(PRODUCT_VERSION_MINOR)-$(PRODUCT_VERSION_FLAVOUR) \
-    ro.modversion=$(CITRUS_MOD_VERSION) \
-    ro.citrus.buildtype=$(CITRUS_BUILD_TYPE)
+    caf.ota.version=$(CAF_MOD_VERSION) \
+    ro.caf.version=$(PRODUCT_VERSION_MINOR)-$(PRODUCT_VERSION_FLAVOUR) \
+    ro.modversion=$(CAF_MOD_VERSION) \
+    ro.caf.buildtype=$(CAF_BUILD_TYPE)
 
-# Citrus Bloats
+# Caf Bloats
 PRODUCT_PACKAGES += \
 MusicFX \
 SnapdragonCamera \
@@ -228,13 +197,3 @@ SnapdragonGallery \
 SnapdragonMusic \
 Launcher3 \
 LatinIME
-
-#Themes
-# include vendor/citrus/config/themes_common.mk
-
-# DU Utils Library
-# PRODUCT_PACKAGES += \
-#    org.dirtyunicorns.utils
-
-#PRODUCT_BOOT_JARS += \
-#    org.dirtyunicorns.utils

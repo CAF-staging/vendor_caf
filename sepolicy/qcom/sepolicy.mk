@@ -1,2 +1,2 @@
 BOARD_SEPOLICY_DIRS += \
-    vendor/citrus/sepolicy/qcom
+    vendor/caf/sepolicy/qcom
